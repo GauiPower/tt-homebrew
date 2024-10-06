@@ -1,6 +1,5 @@
 import { GmeFile } from "gmelib"
-import { readFileSync } from "fs"
-import readline from "readline"
+import { readFileSync, writeFileSync } from "fs"
 import child from "child_process"
 import minimist from "minimist"
 const argv = minimist(process.argv.splice(2))
@@ -62,15 +61,19 @@ console.log(child.execSync("make", {cwd: `packages/${argv.n}`}).toString())
 // process.exit()
 
 if (argv.p) {
-    // patch the output with dd
+    // patch the output with dd (its faster then writing the whole file to the pen)
     child.execSync(`dd if=packages/${argv.n}/build/2N.bin of=${argv.o} bs=1 seek=${gmefile.main2NbinaryTable[0].offset} count=${gmefile.main2NbinaryTable[0].size} conv=notrunc`)
     child.execSync(`dd if=packages/${argv.n}/build/3L.bin of=${argv.o} bs=1 seek=${gmefile.main3LbinaryTable[0].offset} count=${gmefile.main3LbinaryTable[0].size} conv=notrunc`)
 } else {
-    // todo: fix this
+    // modify the file with gmelib
     if (argv.b.toString().toLowerCase() == "m") {
         gmefile.replaceBinary(readFileSync(`packages/${argv.n}/build/2N.bin`), gmefile.main2NbinaryTable, gmefile.main2NbinaryTableOffset, 0)
+        gmefile.replaceBinary(readFileSync(`packages/${argv.n}/build/3L.bin`), gmefile.main3LbinaryTable, gmefile.main3LbinaryTableOffset, 0)
+        writeFileSync(argv.o, gmefile.gmeFileBuffer)
     } else {
         gmefile.replaceBinary(readFileSync(`packages/${argv.n}/build/2N.bin`), gmefile.game2NbinariesTable, gmefile.game2NbinariesTableOffset, argv.b)
+        gmefile.replaceBinary(readFileSync(`packages/${argv.n}/build/3L.bin`), gmefile.game3LbinariesTable, gmefile.game3LbinariesTableOffset, argv.b)
+        writeFileSync(argv.o, gmefile.gmeFileBuffer)
     }
 }
 

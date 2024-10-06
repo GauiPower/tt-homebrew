@@ -1,0 +1,7 @@
+node_modules
+.vscode
+*.gme
+*.out
+*.bin
+gme/*
+dumps/*

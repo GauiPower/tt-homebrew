@@ -1,9 +1,8 @@
 #include "api.h"
-
-system_api *api;
+#include "sdk.c"
 
 void main(system_api *apiOrgi) {
-    api = apiOrgi;
+    initTT(apiOrgi);
     if (api->fpAkOidPara[First_time_exec] == 0) {
         api->fpAkOidPara[First_time_exec] = 1; 
 

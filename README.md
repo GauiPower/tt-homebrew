@@ -1,15 +1,15 @@
 # tt-homebrew
-tt-homebrew is a tool that makes it easy to write games for the TipToi in C, providing full access to all features of the pen.
+tt-homebrew is a tool that makes it easy to write games for the TipToi in C, providing full access to all the features of the TipToi.
 
 ## disclaimer
-tt-homebrew is not in anyway afiliated with ravensburger. It's possible that you brick your pen, use this tool at your own risk. It never happened to me in all testing, but you could call functions that overwrite the flash, making it unable to boot again. 
+tt-homebrew is not in anyway affiliated with Ravensburger. It's possible to brick your pen, so use this tool at your own risk. It never happened to me in all my testing, but you could call functions that overwrite the flash, making it unable to boot again. 
 
 ## getting started
 Install `nodejs` and `gcc-arm-none-eabi` or just use `nix-shell`.  
 Then run `npm i` to install the dependencies.  
 Get the syntax with `node build.js -h`.
 
-With `node build.js -i gme/Wimmelbuch.gme -o '/run/media/$(whoami)/tiptoi/Wimmelbuch.gme' -n dump_ram -p -g m` you can compile your first example, that dumps ram from the tiptoi to its storage, you can find it by connecting your pen to your pc and look in the "dump" folder
+With `node build.js -i gme/Wimmelbuch.gme -o '/run/media/$(whoami)/tiptoi/Wimmelbuch.gme' -n dump_ram -p -g m` you can compile your first example, which dumps ram from the tiptoi to its storage, you can find it by connecting your pen to your pc and looking in the "dump" folder.
 
 
 ## roadmap
@@ -20,11 +20,12 @@ With `node build.js -i gme/Wimmelbuch.gme -o '/run/media/$(whoami)/tiptoi/Wimmel
 - [ ] Microphone support for Pens (in work)
 - [ ] Uart
 - [ ] Wifi support (i dont have a pen with wifi)
-- [ ] add firmware offsets with functions that arent accesable via the game api
+- [ ] add firmware offsets with functions that arent accessible via the sys_api
 
 
 ## knowledge
-on 2N and 3L the system_api seems to be compatible, but different ``fpAkOidPara``
+- On 2N and 3L the system_api seems to be compatible, but different ``fpAkOidPara``
+- The main binary handels the execution of the scripts inside the gme. If the offset to the main binary table is 0, the pen uses a main binary thats inside the firmware.
 
 | Processor     | 1             | 2N            | 3L (tested on 4E, other firmwares are different)     
 | ------------- | ------------- | ------------- | ------------- |
@@ -38,3 +39,20 @@ on 2N and 3L the system_api seems to be compatible, but different ``fpAkOidPara`
 | Return Main   | tbd           | 
 
 > i dont have a pen with first gen processor, feel free to test it on your pen
+
+
+## little ghidra guide
+Want to decompile binaries from gme files? This is my routine:
+- Use `tttool binaries` to get the binaries.
+- Use `tttool export` to see which game is started when you press the game button.
+- For 2N use `2_Game` and for 3L (3L, 4E, 5E, 6E) use `6_Game` plus the number from the yaml.
+- Drag and drop this file into ghidra and select `v5t little endian` as the language.
+- Click on `additional settings` and enter the `GME bins` address from the table as the base address.
+- Open the file and go to the start and press `d`. This will decompile the first instruction. This will be a jump to the main function.
+- Declare the main function with `f` und rename it to `main`
+- Go to file -> parse c source and import the `lib/api.h`
+- Now declare the first argument from your main function as this struct
+- Click on the ram symbol and add a memory region for the game state. Make this region rw and the binary rx.
+- then run the auto-analysis 
+- If you have done everything right, you should now have a project with api names, correct offsets and no red addresses
+

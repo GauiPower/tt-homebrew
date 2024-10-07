@@ -1,11 +1,10 @@
 #include "api.h"
-
-system_api *api;
+#include "sdk.c"
 
 int i;
 
 void main(system_api *apiPara) {
-    api = apiPara;
+    initTT(apiPara);
     if (api->fpAkOidPara[First_time_exec] == 0) {
         api->fpAkOidPara[First_time_exec] = 1;
         i = 0;

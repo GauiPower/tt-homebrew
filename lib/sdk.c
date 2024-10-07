@@ -1,6 +1,10 @@
 #include "api.h"
 
-extern system_api *api;
+system_api *api;
+
+void initTT(system_api *apiPara) {
+    api = apiPara;
+}
 
 void playSound(unsigned int sound_id) {
     int filehandle_current_gme = *api->p_filehandle_current_gme;

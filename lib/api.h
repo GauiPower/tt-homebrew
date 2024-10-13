@@ -8,7 +8,7 @@ typedef struct {                                                                
     int (*is_audio_playing)();                                                                                 // 3
     void (*tbd4)();                                                                                            // 4
     int (*open)(unsigned short *, unsigned int, unsigned int);                                                 // 5
-    int (*read)(int filehandle, void *buff, unsigned int size);                                                // 6 todo
+    int (*read)(int filehandle, void *buff, unsigned int size);                                                // 6 
     int (*write)(int filehandle, void *buff, unsigned int size);                                               // 7
     int (*close)(int filehandle);                                                                              // 8
     int (*seek)(int, unsigned int, int allways_is_zero);                                                       // 9
@@ -101,11 +101,11 @@ typedef struct {                                                                
     int(*tbd96);
     int(*tbd97);
     int(*tbd98);
-    void (*something_chomp_voice)();
+    void (*play_chomp_voice)();
     void (*get_random_number_or_counter)();
     void (*maybe_mkFile_maybe_delete)();
     void (*tbd102)();
-    void (*tbd103)();
+    void (*tbd103)(); // from here on (including this) is only on newer pens (not on 2N) todo: check on which (its confirmed to exist in 4E)
     void (*returns_booc_rec_str)();
     void (*tbd105)();
     void (*record_sound)();
@@ -148,16 +148,24 @@ typedef struct {                                                                
 // #define build_for_2N
 #ifdef build_for_2N
 // #pragma message("Compiling for 2N")
-#define SAVEDATA 0x08141000
 #define First_time_exec 0xdec
 #define anotherMain_last_maybe_exit 0xdee
+#define new_oid 0xded
+#define oid_offset 0x4
 #define otherMain_equals_100 0x58
+
+#define SAVEDATA 0x08141000
+#define START_PROG_BIN 0x08009000
 #else
 // #pragma message("Compiling for 3L")
-#define SAVEDATA 0x00940000
 #define First_time_exec 0x1318
 #define anotherMain_last_maybe_exit 0x131a
+#define new_oid 0x1319
+#define oid_offset 0xc
 #define otherMain_equals_100 0x6
+
+#define SAVEDATA 0x00940000
+#define START_PROG_BIN 0x00829000
 #endif
 
 #endif

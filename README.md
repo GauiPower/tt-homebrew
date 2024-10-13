@@ -9,7 +9,8 @@ Install `nodejs` and `gcc-arm-none-eabi` or just use `nix-shell`.
 Then run `npm i` to install the dependencies.  
 Get the syntax with `node build.js -h`.
 
-With `node build.js -i gme/Wimmelbuch.gme -o '/run/media/$(whoami)/tiptoi/Wimmelbuch.gme' -n dump_ram -p -g m` you can compile your first example, which dumps ram from the tiptoi to its storage, you can find it by connecting your pen to your pc and looking in the "dump" folder.
+With `node build.js -i gme/Wimmelbuch.gme -o "/run/media/$(whoami)/tiptoi/Wimmelbuch.gme" -n dump_ram -p -b 0` you can compile your first example, which dumps ram from the tiptoi to its storage, as soon you try to start the first game. You can find it by connecting your pen to your pc and looking in the "dump" folder.
+
 
 
 ## roadmap
@@ -26,13 +27,14 @@ With `node build.js -i gme/Wimmelbuch.gme -o '/run/media/$(whoami)/tiptoi/Wimmel
 ## knowledge
 - On 2N and 3L the system_api seems to be compatible, but different ``fpAkOidPara``
 - The main binary handels the execution of the scripts inside the gme. If the offset to the main binary table is 0, the pen uses a main binary thats inside the firmware.
+- Reading from unmaped memory on 4E (0x80 9000 < crash < 0x82 9000)
 
-| Processor     | 1             | 2N            | 3L (tested on 4E, other firmwares are different)     
+| Processor     | 1             | 2N            | 3L and later (tested on 4E, other firmwares are different)     
 | ------------- | ------------- | ------------- | ------------- |
 | Bootrom       | tbd           | 0x0000 0000   | 0x0000 0000?  |
 | Bios.bin      | tbd           | 0x0800 0000   | 0x0080 0000   |
 | Prog.bin      | tbd           | 0x0800 9000   | 0x0082 9000
-| Prog.bin entry| tbd           | 0x0800 9100   | 0x0085 ed01 the 1 at the end means thumb mode / only for 4e / differs on 5E and 6E
+| Prog.bin entry| tbd           | 0x0800 9100   | 0x0085 ed01 the 1 at the end means thumb mode / only for 4E / differs on 5E and 6E
 | GME bins      | tbd           | 0x0813 2000   | 0x0093 0000?
 | GME Gamestate | tbd           | 0x0814 1000   | 0x0094 0000
 | Return Game   | tbd           |               | 0x0082 c3c5? looks wrong
@@ -47,7 +49,7 @@ Want to decompile binaries from gme files? This is my routine:
 - Use `tttool export` to see which game is started when you press the game button.
 - For 2N use `2_Game` and for 3L (3L, 4E, 5E, 6E) use `6_Game` plus the number from the yaml.
 - Drag and drop this file into ghidra and select `v5t little endian` as the language.
-- Click on `additional settings` and enter the `GME bins` address from the table as the base address.
+- Click on `Options` and enter the `GME bins` address from the table as the base address.
 - Open the file and go to the start and press `d`. This will decompile the first instruction. This will be a jump to the main function.
 - Declare the main function with `f` und rename it to `main`
 - Go to file -> parse c source and import the `lib/api.h`

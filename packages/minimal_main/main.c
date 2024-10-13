@@ -1,6 +1,13 @@
 #include "api.h"
 #include "sdk.c"
 
+// todo: this should be a example that you can use a main binary.
+// the main binary handels parsing and executing the scripts inside a gme file
+// this is a bunch of logic and this is a try to implement this
+
+
+// CURRENTLY THIS CODE DOESN'T WORK!
+
 void main(system_api *apiPara) {
     initTT(apiPara);
     if (api->fpAkOidPara[First_time_exec] == 0) {

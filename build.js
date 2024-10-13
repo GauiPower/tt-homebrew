@@ -1,5 +1,5 @@
 import { GmeFile } from "gmelib"
-import { readFileSync, writeFileSync } from "fs"
+import { existsSync, readFileSync, writeFileSync } from "fs"
 import child from "child_process"
 import minimist from "minimist"
 const argv = minimist(process.argv.splice(2))
@@ -18,18 +18,18 @@ const printHelp = () => {
     process.exit(1)
 }
 
-if (argv.h | argv.help) {
+if (argv.h || argv.help) {
     printHelp();
 }
 
 if (!argv.i) {
-    console.error("please specify the input file\n")
+    console.error("Error: Specify an input file with -i input.gme")
     printHelp();
 }
 
 const gmefile = new GmeFile(readFileSync(argv.i))
 
-if (argv.l || argv.b > gmefile.game1binariesTable.length - 1 || (typeof argv.b === "string" && argv.b.toString().toLowerCase() !== "m")) { // todo fix this mess
+if (argv.l || argv.b > gmefile.game1binariesTable.length - 1 || (typeof argv.b === "string" && argv.b.toString().toLowerCase() !== "m")) {
     console.log(`Valid games are 0-${gmefile.game1binariesTable.length - 1} or M for the main binary`)
     process.exit(1)
 }
@@ -46,31 +46,48 @@ if (argv.d) {
     }
     process.exit()
 }
-
 if (!argv.n) {
-    console.error("use -n to specify which package to build, for example dump_ram")
+    console.error("Error: Use -n to specify which package to build, for example 'dump_ram'.")
     printHelp()
 }
 
 if (!argv.o) {
-    console.error("specify a output file with -o output.gme")
+    console.error("Error: Specify an output file with -o output.gme")
     printHelp()
 }
 
-console.log(child.execSync("make", {cwd: `packages/${argv.n}`}).toString())
-// process.exit()
+if (!existsSync(`packages/${argv.n}`)) {
+    console.error(`Error: No package found with the name "${argv.n}" in /packages`)
+    process.exit(1)
+}
+
+console.log(child.execSync("make", { cwd: `packages/${argv.n}` }).toString())
 
 if (argv.p) {
+    if (!existsSync(argv.o)) {
+        console.error(`Error: Output file "${argv.o}" does not exist. Cannot patch with dd.`)
+        process.exit(1)
+    }
+    // todo: check output binsize
     // patch the output with dd (its faster then writing the whole file to the pen)
-    child.execSync(`dd if=packages/${argv.n}/build/2N.bin of=${argv.o} bs=1 seek=${gmefile.main2NbinaryTable[0].offset} count=${gmefile.main2NbinaryTable[0].size} conv=notrunc`)
-    child.execSync(`dd if=packages/${argv.n}/build/3L.bin of=${argv.o} bs=1 seek=${gmefile.main3LbinaryTable[0].offset} count=${gmefile.main3LbinaryTable[0].size} conv=notrunc`)
+    if (argv.b.toString().toLowerCase() == "m") {
+        console.log(`replacing ${gmefile.main2NbinaryTable[0].filename} with dd`)
+        child.execSync(`dd if=packages/${argv.n}/build/2N.bin of=${argv.o} bs=1 seek=${gmefile.main2NbinaryTable[0].offset} count=${gmefile.main2NbinaryTable[0].size} conv=notrunc`)
+        child.execSync(`dd if=packages/${argv.n}/build/3L.bin of=${argv.o} bs=1 seek=${gmefile.main3LbinaryTable[0].offset} count=${gmefile.main3LbinaryTable[0].size} conv=notrunc`)
+    } else {
+        console.log(`replacing ${gmefile.game2NbinariesTable[argv.b].filename} with dd`)
+        child.execSync(`dd if=packages/${argv.n}/build/2N.bin of=${argv.o} bs=1 seek=${gmefile.game2NbinariesTable[argv.b].offset} count=${gmefile.game2NbinariesTable[argv.b].size} conv=notrunc`)
+        child.execSync(`dd if=packages/${argv.n}/build/3L.bin of=${argv.o} bs=1 seek=${gmefile.game3LbinariesTable[argv.b].offset} count=${gmefile.game3LbinariesTable[argv.b].size} conv=notrunc`)
+    }
 } else {
     // modify the file with gmelib
+    console.log(`replacing ${gmefile.main2NbinaryTable[0].filename} with gmelib`)
     if (argv.b.toString().toLowerCase() == "m") {
         gmefile.replaceBinary(readFileSync(`packages/${argv.n}/build/2N.bin`), gmefile.main2NbinaryTable, gmefile.main2NbinaryTableOffset, 0)
         gmefile.replaceBinary(readFileSync(`packages/${argv.n}/build/3L.bin`), gmefile.main3LbinaryTable, gmefile.main3LbinaryTableOffset, 0)
         writeFileSync(argv.o, gmefile.gmeFileBuffer)
     } else {
+        console.log(`replacing ${gmefile.game2NbinariesTable[argv.b].filename} with gmelib`)
         gmefile.replaceBinary(readFileSync(`packages/${argv.n}/build/2N.bin`), gmefile.game2NbinariesTable, gmefile.game2NbinariesTableOffset, argv.b)
         gmefile.replaceBinary(readFileSync(`packages/${argv.n}/build/3L.bin`), gmefile.game3LbinariesTable, gmefile.game3LbinariesTableOffset, argv.b)
         writeFileSync(argv.o, gmefile.gmeFileBuffer)

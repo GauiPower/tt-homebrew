@@ -6,6 +6,7 @@ int file;
 int fileOpen;
 
 // note: if you try to read from unmaped memory, a interupt will turn off the pen
+// also you have to create the dump foler first or change the filepath
 
 void main(system_api *apiOrgi) {
     initTT(apiOrgi);

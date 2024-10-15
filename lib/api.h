@@ -105,7 +105,7 @@ typedef struct {                                                                
     void (*get_random_number_or_counter)();
     void (*maybe_mkFile_maybe_delete)();
     void (*tbd102)();
-    void (*tbd103)(); // from here on (including this) is only on newer pens (not on 2N) todo: check on which (its confirmed to exist in 4E)
+    void (*tbd103)(); // functions from here on (including this) is only avalibel on create pens 
     void (*returns_booc_rec_str)();
     void (*tbd105)();
     void (*record_sound)();

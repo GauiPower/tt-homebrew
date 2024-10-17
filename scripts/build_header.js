@@ -1,6 +1,6 @@
 import fs from "fs"
 
-const lines = fs.readFileSync("api.csv").toString().split("\n")
+const lines = fs.readFileSync(process.argv[2]).toString().split("\n")
 for (let i = 0; i < lines.length; i++) {
     const fields = lines[i].split("\t")
     if (fields[2] != "FALSCH") {

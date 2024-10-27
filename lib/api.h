@@ -51,7 +51,7 @@ typedef struct {                                                                
     int(*tbd46);
     int(*tbd47);
     int(*tbd48);
-    int(*tbd49);
+    int(*gme_register_count);
     int(*tbd50);
     int(*tbd51);
     int(*tbd52);
@@ -75,7 +75,7 @@ typedef struct {                                                                
     int(*tbd70);
     int(*tbd71);
     int(*tbd72);
-    int(*tbd73);
+    unsigned short *(gme_registers);
     int(*tbd74);
     int(*tbd75);
     int(*tbd76);

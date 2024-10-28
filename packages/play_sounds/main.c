@@ -10,7 +10,7 @@ void main(system_api *apiPara) {
         currentSoundId = 0;
     }
     if (api->is_audio_playing() == 0) {
-        playSound(currentSoundId);
+        playSoundNow(currentSoundId);
         currentSoundId++;
     }
 }

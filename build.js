@@ -72,12 +72,12 @@ if (argv.p) {
     // patch the output with dd (its faster then writing the whole file to the pen)
     if (argv.b.toString().toLowerCase() == "m") {
         console.log(`replacing ${gmefile.main2NbinaryTable[0].filename} with dd`)
-        child.execSync(`dd if=packages/${argv.n}/build/2N.bin of=${argv.o} bs=1 seek=${gmefile.main2NbinaryTable[0].offset} count=${gmefile.main2NbinaryTable[0].size} conv=notrunc`)
-        child.execSync(`dd if=packages/${argv.n}/build/3L.bin of=${argv.o} bs=1 seek=${gmefile.main3LbinaryTable[0].offset} count=${gmefile.main3LbinaryTable[0].size} conv=notrunc`)
+        child.execSync(`dd "if=packages/${argv.n}/build/2N.bin" "of=${argv.o}" bs=1 seek=${gmefile.main2NbinaryTable[0].offset} count=${gmefile.main2NbinaryTable[0].size} conv=notrunc`)
+        child.execSync(`dd "if=packages/${argv.n}/build/3L.bin" "of=${argv.o}" bs=1 seek=${gmefile.main3LbinaryTable[0].offset} count=${gmefile.main3LbinaryTable[0].size} conv=notrunc`)
     } else {
         console.log(`replacing ${gmefile.game2NbinariesTable[argv.b].filename} with dd`)
-        child.execSync(`dd if=packages/${argv.n}/build/2N.bin of=${argv.o} bs=1 seek=${gmefile.game2NbinariesTable[argv.b].offset} count=${gmefile.game2NbinariesTable[argv.b].size} conv=notrunc`)
-        child.execSync(`dd if=packages/${argv.n}/build/3L.bin of=${argv.o} bs=1 seek=${gmefile.game3LbinariesTable[argv.b].offset} count=${gmefile.game3LbinariesTable[argv.b].size} conv=notrunc`)
+        child.execSync(`dd "if=packages/${argv.n}/build/2N.bin" "of=${argv.o}" bs=1 seek=${gmefile.game2NbinariesTable[argv.b].offset} count=${gmefile.game2NbinariesTable[argv.b].size} conv=notrunc`)
+        child.execSync(`dd "if=packages/${argv.n}/build/3L.bin" "of=${argv.o}" bs=1 seek=${gmefile.game3LbinariesTable[argv.b].offset} count=${gmefile.game3LbinariesTable[argv.b].size} conv=notrunc`)
     }
 } else {
     // modify the file with gmelib

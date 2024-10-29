@@ -1,7 +1,6 @@
 #include "api.h"
 #include "sdk.c"
 
-// this is just a experiment and currently DOESNT WORK
 
 void main(system_api *apiPara) {
     initTT(apiPara);
@@ -10,7 +9,9 @@ void main(system_api *apiPara) {
         initPlaySoundFifo();
         // put your init code here
         api->play_chomp_voice(3);
-        api->gme_registers[0] = 1; //check
+        api->fpAkOidPara[next_game] = 1; // game id 
+        api->fpAkOidPara[start_next_game] = 1; 
+        api->fpAkOidPara[First_time_exec] = 3;
     }
     // put your loop code here
 

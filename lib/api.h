@@ -154,6 +154,9 @@ typedef struct {                                                                
 #define oid_offset 0x4
 #define otherMain_equals_100 0x58
 
+#define next_game 0x131
+#define start_next_game 0x12f
+
 #define SAVEDATA 0x08141000
 #define START_PROG_BIN 0x08009000
 #else
@@ -164,8 +167,11 @@ typedef struct {                                                                
 #define oid_offset 0xc
 #define otherMain_equals_100 0x6
 
+#define next_game 0x69d
+#define start_next_game 0x69b
+
 #define SAVEDATA 0x00940000
 #define START_PROG_BIN 0x00829000
 #endif
 
-#endif
+#endif// this is just a experiment and currently DOESNT WORK

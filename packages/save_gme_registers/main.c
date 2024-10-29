@@ -25,13 +25,13 @@ void main(system_api *apiPara) {
         filename[16] = L'0' + ((product_id / 10) % 10);
         filename[17] = L'0' + ((product_id) % 10);
 
-        if (api->gme_registers[5] == 1) {
+        if (api->gme_registers[5] == 0) {
             // load game
             int file = api->open(filename, 0, 0);
             api->read(file, api->gme_registers, *api->gme_register_count * 2);  // oh man, dass muss definitiv getestet werden
             api->close(file);
             api->play_chomp_voice(3);  // play a sound to know that loading worked
-        } else if (api->gme_registers[5] == 0) {
+        } else if (api->gme_registers[5] == 1) {
             // save game
             int file = api->open(filename, 1, 1);
             api->write(file, api->gme_registers, *api->gme_register_count * 2);

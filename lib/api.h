@@ -108,16 +108,16 @@ typedef struct {                                                                
     void (*tbd103)(); // functions from here on (including this) is only avalibel on create pens 
     void (*returns_booc_rec_str)();
     void (*tbd105)();
-    void (*record_sound)();
+    void (*broken_record_sound)();
     void (*also_record_sound)();
-    void (*another_record_sound)();
+    void (*record_sound)(int rec_id, int tbd_is_10);
     void (*more_record_sound)();
     void (*end_of_record_sound)();
     void (*used_in_rec_main)();
-    void (*tbd112)();
+    void (*play_recording)(int rec_id);
     void (*tbd113)();
     void (*tbd114)();
-    void (*tbd115)();
+    void (*select_recording_for_playback)();
     void (*tbd116)();
     void (*spam_print_and_sounds)();
     void (*tbd118)();
@@ -134,7 +134,7 @@ typedef struct {                                                                
     void (*if_stuff_not_null_executes_funcs_and_sets_it_null)();
     void (*tbd130)();
     void (*tbd131)();
-    void (*get_book_recordings_string)();
+    void (*create_recoring_folder)(int product_id);
     void (*tbd133)();
     void (*tbd134)();
     void (*tbd135)();
